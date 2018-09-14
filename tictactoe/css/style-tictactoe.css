@@ -9,3 +9,24 @@ td{
     text-align: center;
     font-size: x-large;
 }
+
+.player {
+    margin-top: 10px;
+    margin-right: 30px;
+}
+
+.player[name="X"]{
+    background-color: lightblue;
+}
+
+.player[name="O"]{
+    background-color: lightgreen;
+}
+
+.highlight {
+    border: 5px solid yellow;
+}
+
+.unhighlight {
+    border: 1px none black;
+}
