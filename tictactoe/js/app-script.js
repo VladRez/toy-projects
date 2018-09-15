@@ -16,6 +16,12 @@ $('.player[name="O"]').addClass('unhighlight');
 //on tag td click trigger function
 $('td').click(
     function() {
+        if(gameOver){
+            return;
+        }
+        if($(this).text() != ''){
+            return;
+        }
         if(currentPlayerName == 'X'){
             $(this).text('X');
         } else {
