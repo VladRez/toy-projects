@@ -5,6 +5,8 @@ var columnName;
 
 var gameOver = false;
 
+var gridDimension = 3;
+
 $('span[name="whoseturn"]').text(currentPlayerName);
 $('.gameover').hide();
 
@@ -19,14 +21,21 @@ $('td').click(
         } else {
             $(this).text('O');
         }
+
         rowName = $(this).parent().attr("name");
         columnName = $(this).attr("name");
-        if(checkIfCurrentPlayerWon_CheckRow() || checkIfCurrentPlayerWon_CheckColumn()){
+
+        if(checkIfCurrentPlayerWon_CheckRow() || checkIfCurrentPlayerWon_CheckColumn()
+            || checkIfCurrentPlayerWon_CheckLeftToRightDiagonal()
+            || checkIfCurrentPlayerWon_CheckRightToLeftDiagonal()){
             gameOver = true;
             //
             $('.gameover').show();
             $('span[name="whowon"]').text(currentPlayerName);
+
+            return;
         }
+
         if (currentPlayerName == 'X') {
             //Switch button highlighting
             $('.player[name="X"]').removeClass('highlight');
@@ -34,6 +43,7 @@ $('td').click(
 
             $('.player[name="O"]').removeClass('unhighlight');
             $('.player[name="O"]').addClass('highlight');
+
             currentPlayerName = 'O';
             //set text from X to O
             $('span[name="whoseturn"]').text('O');
@@ -53,9 +63,11 @@ $('td').click(
 );
 
 function checkIfCurrentPlayerWon_CheckRow() {
-    var currentRow = $('tr[name="' + rowName +'"');
+    //Select clicked row by name
+    var currentRow = $('tr[name="' + rowName + '"]');
     var currentPlayerWon = true;
-    currentRow.children().each(function(){
+    //For each row cell, if text doesn't equal current player return false
+    currentRow.children().each(function() {
         if($(this).text() != currentPlayerName){
             currentPlayerWon = false;
         }
@@ -65,8 +77,46 @@ function checkIfCurrentPlayerWon_CheckRow() {
 
 function checkIfCurrentPlayerWon_CheckColumn(){
     var currentPlayerWon = true;
+    //for each row by name, if row by name doesn't equal player return false
     $('tr').each(function(){
        var col = $(this).find('td[name=' + columnName +']');
+       if(col.text() != currentPlayerName){
+           currentPlayerWon = false;
+       }
+    });
+    return currentPlayerWon;
+}
+
+function checkIfCurrentPlayerWon_CheckLeftToRightDiagonal() {
+    var currentPlayerWon = true;
+    //for each row, select cell by row name, if cell text doesn't equal player return false
+    $('tr').each(function(){
+       var currentRowName = $(this).attr("name");
+       var col = $(this).find('td[name=' + currentRowName + ']');
+       if(col.text() != currentPlayerName){
+           currentPlayerWon = false;
+       }
+    });
+    return currentPlayerWon;
+}
+
+function checkIfCurrentPlayerWon_CheckRightToLeftDiagonal(){
+    var currentPlayerWon = true;
+    //count down + count to left
+    var rowNumberColumnNumberTotal = parseInt(rowName) + parseInt(columnName);
+        // center cell: row 1 + col 1 = 2 doesn't equal 3 - 1 return false
+    if(rowNumberColumnNumberTotal != (gridDimension - 1)){
+        return false;
+    }
+
+    $('tr').each(function(){
+        //For each row
+       var currentRowName = $(this).attr("name");
+       var currentRowNumber = parseInt(currentRowName);
+       //cell 2 - 0 = 2
+       var columnNumberToCheck = rowNumberColumnNumberTotal - currentRowNumber;
+        //if current selected cell doesn't equal player name return false
+       var col = $(this).find('td[name=' + columnNumberToCheck + ']');
        if(col.text() != currentPlayerName){
            currentPlayerWon = false;
        }
