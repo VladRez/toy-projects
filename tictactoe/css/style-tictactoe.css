@@ -30,3 +30,13 @@ td{
 .unhighlight {
     border: 1px none black;
 }
+
+.gameover {
+    background-color: green;
+    font-size: xx-large;
+}
+
+.gamecontainer {
+    margin: 20px;
+    width: 500px;
+}
