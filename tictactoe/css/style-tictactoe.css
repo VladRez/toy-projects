@@ -9,6 +9,12 @@ td{
     text-align: center;
     font-size: x-large;
 }
+.locked-cell{
+    background: red;
+}
+.winning-cells{
+    background: green;
+}
 
 .player {
     margin-top: 10px;

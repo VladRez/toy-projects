@@ -5,7 +5,7 @@ var columnName;
 
 var gameOver = false;
 
-var gridDimension = 3;
+var gridDimension = 4;
 
 $('span[name="whoseturn"]').text(currentPlayerName);
 $('.gameover').hide();
@@ -20,6 +20,8 @@ $('td').click(
             return;
         }
         if($(this).text() != ''){
+            $(this).addClass('locked-cell');
+            $('span[name="referee"]').text("You can't change opponents mark");
             return;
         }
         if(currentPlayerName == 'X'){
@@ -31,9 +33,7 @@ $('td').click(
         rowName = $(this).parent().attr("name");
         columnName = $(this).attr("name");
 
-        if(checkIfCurrentPlayerWon_CheckRow() || checkIfCurrentPlayerWon_CheckColumn()
-            || checkIfCurrentPlayerWon_CheckLeftToRightDiagonal()
-            || checkIfCurrentPlayerWon_CheckRightToLeftDiagonal()){
+        if(isWinner()){
             gameOver = true;
             //
             $('.gameover').show();
@@ -67,6 +67,11 @@ $('td').click(
         }
     }
 );
+function isWinner(){
+    return (checkIfCurrentPlayerWon_CheckRow() || checkIfCurrentPlayerWon_CheckColumn()
+    || checkIfCurrentPlayerWon_CheckLeftToRightDiagonal()
+    || checkIfCurrentPlayerWon_CheckRightToLeftDiagonal());
+}
 
 function checkIfCurrentPlayerWon_CheckRow() {
     //Select clicked row by name
@@ -78,6 +83,14 @@ function checkIfCurrentPlayerWon_CheckRow() {
             currentPlayerWon = false;
         }
     });
+
+    if(currentPlayerWon){
+        currentRow.children().each(function() {
+            currentRow.addClass('winning-cells');
+        });
+    }
+
+
     return currentPlayerWon;
 }
 
@@ -90,6 +103,12 @@ function checkIfCurrentPlayerWon_CheckColumn(){
            currentPlayerWon = false;
        }
     });
+    if(currentPlayerWon){
+        $('tr').each(function(){
+            var col = $(this).find('td[name=' + columnName +']');
+            col.addClass('winning-cells');
+        });
+    }
     return currentPlayerWon;
 }
 
@@ -103,6 +122,13 @@ function checkIfCurrentPlayerWon_CheckLeftToRightDiagonal() {
            currentPlayerWon = false;
        }
     });
+    if (currentPlayerWon){
+        $('tr').each(function(){
+            var currentRowName = $(this).attr("name");
+            var col = $(this).find('td[name=' + currentRowName + ']');
+            $(this).find('td[name=' + currentRowName + ']').addClass("winning-cells");
+        });
+    }
     return currentPlayerWon;
 }
 
@@ -110,22 +136,35 @@ function checkIfCurrentPlayerWon_CheckRightToLeftDiagonal(){
     var currentPlayerWon = true;
     //count down + count to left
     var rowNumberColumnNumberTotal = parseInt(rowName) + parseInt(columnName);
-        // center cell: row 1 + col 1 = 2 doesn't equal 3 - 1 return false
+        //check corners
     if(rowNumberColumnNumberTotal != (gridDimension - 1)){
         return false;
     }
 
     $('tr').each(function(){
         //For each row
-       var currentRowName = $(this).attr("name");
-       var currentRowNumber = parseInt(currentRowName);
-       //cell 2 - 0 = 2
-       var columnNumberToCheck = rowNumberColumnNumberTotal - currentRowNumber;
+        var currentRowName = $(this).attr("name");
+        var currentRowNumber = parseInt(currentRowName);
+        //cell 2 - 0 = 2
+        var columnNumberToCheck = rowNumberColumnNumberTotal - currentRowNumber;
         //if current selected cell doesn't equal player name return false
-       var col = $(this).find('td[name=' + columnNumberToCheck + ']');
-       if(col.text() != currentPlayerName){
-           currentPlayerWon = false;
-       }
+        var col = $(this).find('td[name=' + columnNumberToCheck + ']');
+        if(col.text() != currentPlayerName){
+            currentPlayerWon = false;
+        }
     });
+
+    if (currentPlayerWon){
+        $('tr').each(function(){
+            //For each row
+            var currentRowName = $(this).attr("name");
+            var currentRowNumber = parseInt(currentRowName);
+            //cell 2 - 0 = 2
+            var columnNumberToCheck = rowNumberColumnNumberTotal - currentRowNumber;
+            //if current selected cell doesn't equal player name return false
+            var col = $(this).find('td[name=' + columnNumberToCheck + ']');
+            $(this).find('td[name=' + columnNumberToCheck + ']').addClass("winning-cells");
+        });
+    }
     return currentPlayerWon;
 }
