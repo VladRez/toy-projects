@@ -75,18 +75,21 @@ $('.player[name="O"]').addClass('unhighlight');
 
 
 $('button[name="resetBtn"]').click(function(){
-   gameOver =false;
-    $('span[name="referee"]').text('');
-    $('.gameover').hide();
-    resetField();
-
+        resetField();
 });
 function resetField(){
+    gameOver =false;
+    $('span[name="referee"]').text('');
+    $('.gameover').hide();
     var table = document.getElementById("gameField");
     while (table.firstChild){
         table.removeChild(table.firstChild);
     }
     gridDimension = parseInt(document.getElementById("girdSizeField").value);
+    if (gridDimension < 1 || isNaN(gridDimension)){
+        $('span[name="referee"]').text('Grid size has to be more than 0');
+        return;
+    }
     buildGameField(gridDimension);
 }
 function buildGameField(dimension){
@@ -94,21 +97,17 @@ var table = document.getElementById("gameField");
 var row;
 var cell;
 
-for(var i = 0; i < dimension; i++){
-    row = table.appendChild(document.createElement('tr'));
-    row.setAttribute("name",i.toString());
-    for(var j = 0; j < dimension; j++) {
-        cell = row.appendChild(document.createElement('td'));
-        cell.setAttribute("name",j.toString());
-        cell.addEventListener("click",cellClick);
+    for(var i = 0; i < dimension; i++){
+        row = table.appendChild(document.createElement('tr'));
+        row.setAttribute("name",i.toString());
+        for(var j = 0; j < dimension; j++) {
+            cell = row.appendChild(document.createElement('td'));
+            cell.setAttribute("name",j.toString());
+            cell.addEventListener("click",cellClick);
 
+        }
     }
-    //
-    //         cell.innerHTML("");
-}
-// var row = table.insertRow(0);
-// var cell = row.insertCell(0);
-//cell.innerHTML = "";
+
 }
 
 function isWinner(){
@@ -190,7 +189,7 @@ function checkIfCurrentPlayerWon_CheckRightToLeftDiagonal(){
 
         var currentRowName = $(this).attr("name");
         var currentRowNumber = parseInt(currentRowName);
-        console.log(currentRowNumber);
+
         //cell 2 - 0 = 2
         var columnNumberToCheck = rowNumberColumnNumberTotal - currentRowNumber;
         //if current selected cell doesn't equal player name return false
