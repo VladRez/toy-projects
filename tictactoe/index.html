@@ -8,31 +8,8 @@
 </head>
 <body>
 <div class="gamecontainer">
-<table>
-    <tr name="0">
-        <td name="0"></td>
-         <td name="1"></td>
-          <td name="2"></td>
-        <td name="3"></td>
-    </tr>
-    <tr name="1">
-        <td name="0"></td>
-         <td name="1"></td>
-         <td name="2"></td>
-        <td name="3"></td>
-    </tr>
-    <tr name="2">
-        <td name="0"></td>
-         <td name="1"></td>
-          <td name="2"></td>
-        <td name="3"></td>
-    </tr>
-    <tr name="3">
-        <td name="0"></td>
-        <td name="1"></td>
-        <td name="2"></td>
-        <td name="3"></td>
-    </tr>
+<table id="gameField">
+
 </table>
 
 <button class = "player" name = "X">Player X</button>
@@ -42,7 +19,8 @@
 <div class="nextmoveby"> Next move by : <span name="whoseturn"> </span> </div>
 <div class="gameover">Game Over! Player <span name="whowon"> </span> Won!</div>
     <div class="referee"><span name="referee"></span></div>
-
+    <button id = "resetBtnId" name = "resetBtn">Reset</button>
+    <input id = "girdSizeField" type="text" name="fieldSize" value="">
 </div>
     <script src="./js/jquery.js"></script>
     <script src="./js/app-script.js"></script>

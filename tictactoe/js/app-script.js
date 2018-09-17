@@ -5,25 +5,31 @@ var columnName;
 
 var gameOver = false;
 
-var gridDimension = 4;
+var gridDimension = parseInt(document.getElementById("girdSizeField").value);
 
 $('span[name="whoseturn"]').text(currentPlayerName);
 $('.gameover').hide();
+
+buildGameField(gridDimension);
 
 //apply highlight/unhighlight css to class player
 $('.player[name="X"]').addClass('highlight');
 $('.player[name="O"]').addClass('unhighlight');
 //on tag td click trigger function
-$('td').click(
-    function() {
+
+
+    function cellClick() {
         if(gameOver){
             return;
         }
         if($(this).text() != ''){
-            $(this).addClass('locked-cell');
-            $('span[name="referee"]').text("You can't change opponents mark");
+            if($(this).text() != currentPlayerName){
+                $(this).addClass('locked-cell');
+                $('span[name="referee"]').text("You can't change opponents mark");
+            }
             return;
         }
+
         if(currentPlayerName == 'X'){
             $(this).text('X');
         } else {
@@ -66,7 +72,45 @@ $('td').click(
             $('span[name="whoseturn"]').text('X');
         }
     }
-);
+
+
+$('button[name="resetBtn"]').click(function(){
+   gameOver =false;
+    $('span[name="referee"]').text('');
+    $('.gameover').hide();
+    resetField();
+
+});
+function resetField(){
+    var table = document.getElementById("gameField");
+    while (table.firstChild){
+        table.removeChild(table.firstChild);
+    }
+    gridDimension = parseInt(document.getElementById("girdSizeField").value);
+    buildGameField(gridDimension);
+}
+function buildGameField(dimension){
+var table = document.getElementById("gameField");
+var row;
+var cell;
+
+for(var i = 0; i < dimension; i++){
+    row = table.appendChild(document.createElement('tr'));
+    row.setAttribute("name",i.toString());
+    for(var j = 0; j < dimension; j++) {
+        cell = row.appendChild(document.createElement('td'));
+        cell.setAttribute("name",j.toString());
+        cell.addEventListener("click",cellClick);
+
+    }
+    //
+    //         cell.innerHTML("");
+}
+// var row = table.insertRow(0);
+// var cell = row.insertCell(0);
+//cell.innerHTML = "";
+}
+
 function isWinner(){
     return (checkIfCurrentPlayerWon_CheckRow() || checkIfCurrentPlayerWon_CheckColumn()
     || checkIfCurrentPlayerWon_CheckLeftToRightDiagonal()
@@ -143,8 +187,10 @@ function checkIfCurrentPlayerWon_CheckRightToLeftDiagonal(){
 
     $('tr').each(function(){
         //For each row
+
         var currentRowName = $(this).attr("name");
         var currentRowNumber = parseInt(currentRowName);
+        console.log(currentRowNumber);
         //cell 2 - 0 = 2
         var columnNumberToCheck = rowNumberColumnNumberTotal - currentRowNumber;
         //if current selected cell doesn't equal player name return false
