@@ -8,10 +8,13 @@ namespace OOPCS
 {
     class Building : Object
     {
+        private Floor lobby;
         private Floor currentFloor;
         private string buildingName;
         private int numberOfFloors;
         private int numberOfElevators;
+        private Elevator curElevator;
+        private Person curPerson;
         public Building(String buildingName,int numberOfFloors, int numberOfElevators)
         {
             this.buildingName = buildingName;
@@ -19,10 +22,70 @@ namespace OOPCS
             this.numberOfElevators = numberOfElevators;
         }
 
+        
+        public void addElevators()
+        {
+            curElevator = new Elevator(currentFloor, 1);
+            currentFloor.CurElevator = curElevator;
+            currentFloor.HasElevator = true;
+            curElevator.HasPassanger = false;
+        }
+
+        public void AddGuest(Person Guest)
+        {
+            this.curPerson = Guest;
+      
+        }
+
+        public void GoToRequestedFloor()
+        {
+            int requestedFloor = curPerson.OnFloor;
+            int requestFloor = curPerson.ToFloor;
+
+            int currElevatorFloorNumber = curElevator.CurrentFloor.FloorNumber;
+            
+            while (currElevatorFloorNumber != requestedFloor)
+            {
+                currentFloor.CurElevator = null;
+                currentFloor.HasElevator = false;
+                curElevator.CurrentFloor = null;
+                currentFloor = currentFloor.NextFloor;
+
+                curElevator.CurrentFloor = currentFloor;
+                currentFloor.CurElevator = curElevator;
+                currentFloor.HasElevator = true;
+
+                currElevatorFloorNumber = CurrentFloor.FloorNumber;
+            }
+
+            curElevator.Passanger = curPerson;
+            curElevator.HasPassanger = true;
+            Console.WriteLine("\n------\nPicked up " + curPerson.PersonName + " on floor " + currElevatorFloorNumber + "\n------\n");
+
+            while (currElevatorFloorNumber != requestFloor)
+            {
+                currentFloor.CurElevator = null;
+                currentFloor.HasElevator = false;
+                curElevator.CurrentFloor = null;
+
+                currentFloor = currentFloor.NextFloor;
+
+                curElevator.CurrentFloor = currentFloor;
+                currentFloor.CurElevator = curElevator;
+                currentFloor.HasElevator = true;
+
+                currElevatorFloorNumber = CurrentFloor.FloorNumber;
+            }
+
+            Console.WriteLine("\n------\n Dropped off " + curPerson.PersonName + " on floor " + currElevatorFloorNumber + "\n------\n");
+
+        }
+
+        //Linked list of elevators
         public void BuildFloors()
         {
             Floor prevFloor;
-            Floor lobby;
+            
             Floor current = new Floor(this, 0);
             lobby = current;
 
@@ -40,9 +103,17 @@ namespace OOPCS
 
         }
 
+
+        public Building BuildingInfo
+        {
+            get { return this; }
+        }
+
+        
+
         public void PrintAllFloors()
         {
-            Floor printFloor = currentFloor;   
+            Floor printFloor = lobby;   
             while (printFloor != null )
             {
 

@@ -61,8 +61,9 @@ namespace OOPCS
 
         public override string ToString()
         {
-            
-            return string.Format("{0} {1}:\n{2}","Current Floor of building ", curBuilding.BuildingName, FloorNumber.ToString());
+            Console.WriteLine();
+            return string.Format("{0} {1}:\n{2} - {3} - {4}","Floor of building ", curBuilding.BuildingName, FloorNumber.ToString()
+            , hasElevator ? "Has elevator" : "", hasElevator ? curElevator.HasPassanger ? "passanger name: " + curElevator.PassangerName() : "No Passangers" : "");
         }
     }
 }
